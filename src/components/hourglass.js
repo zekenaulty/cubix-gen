@@ -1,7 +1,7 @@
 import { Cube } from './cube.js';
 import { getRandomPaletteColor } from '../utils/colors.js';
 
-export class Diamond {
+export class Hourglass {
   constructor(layers, baseSize, gap, color = null) {
     this.cubes = [];
     this.layers = layers; // Number of layers in the upper half (excluding the middle layer)
@@ -26,8 +26,8 @@ export class Diamond {
         yPos = layer * (baseSize + gap);
       } else {
         // Lower half of the diamond
-        cubesInLayer = baseSize - layer;
-        yPos = -layer * (baseSize + gap);
+        cubesInLayer = layer - layers + 2;
+        yPos = layer * (baseSize + gap);
       }
 
       for (let i = 0; i < cubesInLayer; i++) {
@@ -35,7 +35,7 @@ export class Diamond {
           const cube = new Cube(baseSize, color);
           cube.setPosition(
             (i - (cubesInLayer - 1) / 2) * (baseSize + gap),
-            -yPos,
+            yPos,
             (j - (cubesInLayer - 1) / 2) * (baseSize + gap)
           );
           this.cubes.push(cube);
