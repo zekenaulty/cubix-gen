@@ -9,6 +9,7 @@ import { getRandomColor } from './utils/colors.js';
 const tic = new Date();
 const colorAt = 1000;
 let colorTimer = new Date();
+let first = true;
 
 export class App {
   constructor(container, startup, animate) {
@@ -51,9 +52,9 @@ export class App {
 
 
     // Create the top diamond
-    const layers = 7;
-    const baseSize = 13;
-    const gap = 0;//0.75;
+    const layers = 11;
+    const baseSize = 21;
+    const gap = 7.5;//0.75;
 
     // diamond Creation
     this.diamond = new Diamond(layers, baseSize, gap); // 5 layers, 1 unit cube size, 0.2 gap
@@ -82,14 +83,14 @@ export class App {
         cube.mesh.rotation.x += 0.01;
         cube.mesh.rotation.y += toc % 21 === 0 ? -0.03 : 0.03;
         cube.mesh.rotation.z += 0.05;
-        if (elapsed >= colorAt) {
+        if (elapsed >= colorAt && first) {
           cube.setColor(getRandomColor());
         }
       });
     })();
-
     if (elapsed >= colorAt) {
       colorTimer = new Date();
+      first = false;
     }
 
     // Render Scene

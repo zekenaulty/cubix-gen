@@ -3,14 +3,59 @@ import { getRandomPaletteColor } from '../utils/colors.js';
 
 export class Diamond {
   constructor(layers, baseSize, gap, color = null) {
+
     this.cubes = [];
+
+    this.topPyramid = [];
+    this.leftPyramid = [];
+    this.rightPyramid = [];
+    this.bottomPyramid = [];
+
     this.layers = layers; // Number of layers in the upper half (excluding the middle layer)
     this.baseSize = baseSize;
     this.gap = gap;
     this.color = color || getRandomPaletteColor();
     this.__createCubes();
+    this.__createCubesInverse();
+  }
+  
+  __createCubes() {
+    const { layers, baseSize, gap, color } = this;
+
+    for (let layer = 0; layer < layers; layer++) {
+      for (let i = 0; i < layers - layer; i++) {
+        for (let j = 0; j < layers - layer; j++) {
+          const cube = new Cube(baseSize, color || getRandomPaletteColor());
+          cube.setPosition(
+            (i - (layers - layer) / 2) * (baseSize + gap)-1,
+            layer * (baseSize + gap),
+            (j - (layers - layer) / 2) * (baseSize + gap)+1
+          );
+          this.cubes.push(cube);
+        }
+      }
+    }
   }
 
+  __createCubesInverse() {
+    const { layers, baseSize, gap, color } = this;
+
+    for (let layer = layers+1; layer > -1; layer--) {
+      if(layer == 0) continue;
+      for (let i = layers - layer; i > -1; i--) {
+        for (let j = layers - layer; j > -1; j--) {
+          const cube = new Cube(baseSize, color || getRandomPaletteColor());
+          cube.setPosition(
+            (i - (layers - layer) / 2) * (baseSize + gap) +1,
+            -layer * (baseSize + gap),
+            (j - (layers - layer) / 2) * (baseSize + gap) -1
+          );
+          this.cubes.push(cube);
+        }
+      }
+    }
+  }
+/*
   __createCubes() {
     const { layers, baseSize, gap, color } = this;
 
@@ -43,7 +88,7 @@ export class Diamond {
       }
     }
   }
-
+*/
   addToScene(scene) {
     this.cubes.forEach((cube) => scene.add(cube.mesh));
   }

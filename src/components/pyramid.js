@@ -29,6 +29,24 @@ export class Pyramid {
     }
   }
 
+  __createCubesInverse() {
+    const { layers, baseSize, gap, color } = this;
+
+    for (let layer = layers; layer > 0; layer--) {
+      for (let i = layers - layer; i > 0; i--) {
+        for (let j = layers - layer; j > 0; j--) {
+          const cube = new Cube(baseSize, color || getRandomPaletteColor());
+          cube.setPosition(
+            (i - (layers - layer) / 2) * (baseSize + gap),
+            layer * (baseSize + gap),
+            (j - (layers - layer) / 2) * (baseSize + gap)
+          );
+          this.cubes.push(cube);
+        }
+      }
+    }
+  }
+
   addToScene(scene) {
     this.cubes.forEach((cube) => scene.add(cube.mesh));
   }
