@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { getRandomColor } from '../utils/colors.js';
 
 export class Cube {
-  constructor(size, color = null) {
+  constructor(size, color = null, isEdge = false) {
+    this.isEdge = isEdge;
     const geometry = new THREE.BoxGeometry(size, size, size);
     const material = new THREE.MeshStandardMaterial({
       color: color || getRandomColor(), // Use the provided color or a random one

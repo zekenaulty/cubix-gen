@@ -84,7 +84,7 @@ export class App {
         cube.mesh.rotation.y += toc % 21 === 0 ? -0.03 : 0.03;
         cube.mesh.rotation.z += 0.05;
         if (elapsed >= colorAt && first) {
-          cube.setColor(getRandomColor());
+          //cube.setColor(getRandomColor());
         }
       });
     })();

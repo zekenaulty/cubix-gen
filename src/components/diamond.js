@@ -21,40 +21,57 @@ export class Diamond {
   
   __createCubes() {
     const { layers, baseSize, gap, color } = this;
-
+  
     for (let layer = 0; layer < layers; layer++) {
-      for (let i = 0; i < layers - layer; i++) {
-        for (let j = 0; j < layers - layer; j++) {
-          const cube = new Cube(baseSize, color || getRandomPaletteColor());
+      const cubesInLayer = layers - layer;
+      for (let i = 0; i < cubesInLayer; i++) {
+        for (let j = 0; j < cubesInLayer; j++) {
+          // Check if the cube is at the edge
+          const isEdgeCube = (i === 0 || i === cubesInLayer - 1 || j === 0 || j === cubesInLayer - 1);
+  
+          // Set color to black if edge cube, otherwise use the given color or a random one
+          const cubeColor = isEdgeCube ? 0xffffff : (color || getRandomPaletteColor());
+  
+          const cube = new Cube(baseSize, cubeColor);
           cube.setPosition(
-            (i - (layers - layer) / 2) * (baseSize + gap)-1,
+            (i - (cubesInLayer - 1) / 2) * (baseSize + gap) - 1,
             layer * (baseSize + gap),
-            (j - (layers - layer) / 2) * (baseSize + gap)+1
+            (j - (cubesInLayer - 1) / 2) * (baseSize + gap) + 1
           );
           this.cubes.push(cube);
         }
       }
     }
   }
+  
 
   __createCubesInverse() {
     const { layers, baseSize, gap, color } = this;
-
-    for (let layer = layers+1; layer > -1; layer--) {
-      if(layer == 0) continue;
-      for (let i = layers - layer; i > -1; i--) {
-        for (let j = layers - layer; j > -1; j--) {
-          const cube = new Cube(baseSize, color || getRandomPaletteColor());
+  
+    for (let layer = layers + 1; layer > -1; layer--) {
+      if (layer === 0) continue;
+      const cubesInLayer = layers - layer + 1;
+      for (let i = 0; i < cubesInLayer; i++) {
+        for (let j = 0; j < cubesInLayer; j++) {
+          // Check if the cube is at the edge
+          const isEdgeCube = (i === 0 || i === cubesInLayer - 1 || j === 0 || j === cubesInLayer - 1);
+  
+          // Set color to black if edge cube, otherwise use the given color or a random one
+          const cubeColor = isEdgeCube ? 0xffffff : (color || getRandomPaletteColor());
+  
+          const cube = new Cube(baseSize, cubeColor);
           cube.setPosition(
-            (i - (layers - layer) / 2) * (baseSize + gap) +1,
+            (i - (cubesInLayer - 1) / 2) * (baseSize + gap) + 1,
             -layer * (baseSize + gap),
-            (j - (layers - layer) / 2) * (baseSize + gap) -1
+            (j - (cubesInLayer - 1) / 2) * (baseSize + gap) - 1
           );
           this.cubes.push(cube);
         }
       }
     }
   }
+  
+
 /*
   __createCubes() {
     const { layers, baseSize, gap, color } = this;
