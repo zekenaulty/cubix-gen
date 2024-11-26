@@ -1,9 +1,8 @@
 // Vite Configuration for Cubix-Gen Project
-target: 'esnext';
-
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: '/cubix-gen/', // Base path for GitHub Pages
   root: './',
   build: {
     outDir: 'dist',
