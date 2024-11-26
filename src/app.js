@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Diamond } from './components/diamond.js';
-import { getRandomColor } from './utils/colors.js';
+import { getRandomColor, getRandomPaletteColor } from './utils/colors.js';
 
 //import { getRandomColor } from './utils/colors.js';
 
@@ -37,7 +37,7 @@ export class App {
     this.container.appendChild(this.renderer.domElement);
 
     // Setup Camera
-    this.camera.position.set(250, 250, 250);
+    this.camera.position.set(350, 350, 350);
     this.camera.lookAt(0, 0, 0);
 
     // Orbit Controls
@@ -54,7 +54,7 @@ export class App {
     // Create the top diamond
     const layers = 11;
     const baseSize = 21;
-    const gap = 7.5;//0.75;
+    const gap = 17.5;//0.75;
 
     // diamond Creation
     this.diamond = new Diamond(layers, baseSize, gap); // 5 layers, 1 unit cube size, 0.2 gap
@@ -78,13 +78,14 @@ export class App {
     const elapsed = toc - colorTimer;
 
     requestAnimationFrame(this.animate.bind(this));
+    const c =getRandomColor();
     (() => {
       this.diamond.cubes.forEach((cube) => {
         cube.mesh.rotation.x += 0.01;
         cube.mesh.rotation.y += toc % 21 === 0 ? -0.03 : 0.03;
         cube.mesh.rotation.z += 0.05;
-        if (elapsed >= colorAt && first) {
-          //cube.setColor(getRandomColor());
+        if (elapsed >= colorAt) {
+          if(cube.positionType == 'inner') cube.setColor(c);
         }
       });
     })();
