@@ -7,6 +7,7 @@ document.querySelector('#app').innerHTML = `
 */
 // src/main.js
 import { App } from './app.js';
+import './components/styles/main.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Get the container element

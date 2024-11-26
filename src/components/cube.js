@@ -47,7 +47,7 @@ export class Cube {
       this.mesh.material.needsUpdate = true;
       this.__firstColorSet = false;
     } else {
-      const opacity = this.positionType == 'corner' ? 0.55 : this.positionType == 'edge' ? 0.35 : 0.25;
+      const opacity = this.positionType == 'corner' ? 0.35 : this.positionType == 'edge' ? 0.25 : 0.15;
       // Update the material of the existing mesh
       this.mesh.material = new THREE.MeshBasicMaterial({
         transparent: true,  // Enable transparency
