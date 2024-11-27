@@ -14,14 +14,4 @@ export class Torus extends BaseGeometry {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.__firstColorSet = true;
   }
-  
-  setPosition(x, y, z) {
-    this.mesh.position.set(x, y, z);
-  }
-  
-  setColor(color) {
-    this.color = color;
-    this.material.color.set(color);
-    this.mesh.material.needsUpdate = true;
-  }
 }

@@ -11,6 +11,7 @@ export class Diamond {
     this.innerColor = getRandomPaletteColor();
 
     this.cubes = [];
+    this.cubeLayers = [];
 
     this.group = new THREE.Group(); // Initialize the group
     this.shapeFactory = new ShapeFactory();
@@ -28,7 +29,9 @@ export class Diamond {
     this.__createCubesInverse();
     this.cubes.forEach((cube) => {
       cube.setSize(20);
+      cube.setOpacity(0.5);
       cube.setColor(cube.isCorner ? this.cornerColor : cube.isEdge ? this.edgeColor : this.innerColor);
+      cube.updateMaterial();
     });
   }
 
@@ -48,7 +51,7 @@ export class Diamond {
 
     const isEdgeCube = ((i === 1 || i === cubesInLayer - offset002 || j === 1 || j === cubesInLayer - offset002));
     const cubeColor = isCorner ? this.cornerColor : isEdgeCube ? this.edgeColor : (isCenterLayer ? this.cornerColor : color || this.innerColor);
-    const cube = this.shapeFactory.getShape('Cube', { size: 20, color: 0xff0000 });
+    const cube = this.shapeFactory.getShape('Cube', { size: 20, color: cubeColor });
     
     /*
     const cube = new Cube(
@@ -67,6 +70,9 @@ export class Diamond {
 
     for (let layer = 0; layer < layers; layer++) {
       const cubesInLayer = layers - layer;
+      const layersIndex = this.cubeLayers.length;
+      this.cubeLayers.push([]);
+
       for (let i = 0; i < cubesInLayer; i++) {
         for (let j = 0; j < cubesInLayer; j++) {
           const cube = this.__newCube(cubesInLayer, i, j, layer, layers, baseSize, color);
@@ -76,6 +82,7 @@ export class Diamond {
             (j - (cubesInLayer - 1) / 2) * (baseSize + gap) + 1
           );
           this.cubes.push(cube);
+          this.cubeLayers[layersIndex].push(cube);
           this.group.add(cube.mesh);
         }
       }
@@ -88,18 +95,19 @@ export class Diamond {
     layers++;
     const layer = 0;
     const cubesInLayer = layers - layer;
+    const layersIndex = this.cubeLayers.length;
+    this.cubeLayers.push([]);
     for (let i = 0; i < cubesInLayer; i++) {
       for (let j = 0; j < cubesInLayer; j++) {
         const cube = this.__newCube(cubesInLayer, i, j, layer, layers, baseSize, color, true);
-        cube.isCorner = true;
-        cube.isEdge = true;
-        cube.positionType = 'corner';
+        cube.positionType = 'inner';
         cube.setPosition(
           (i - (cubesInLayer - 1) / 2) * (baseSize + gap),
           -(baseSize + gap) / 2,
           (j - (cubesInLayer - 1) / 2) * (baseSize + gap)
         );
         this.cubes.push(cube);
+        this.cubeLayers[layersIndex].push(cube);
         this.group.add(cube.mesh);
       }
     }
@@ -111,16 +119,20 @@ export class Diamond {
 
     for (let layer = layers + 1; layer > -1; layer--) {
       if (layer === 0) continue;
+      const layersIndex = this.cubeLayers.length;
+      this.cubeLayers.push([]);
       const cubesInLayer = layers - layer + 1;
       for (let i = 0; i < cubesInLayer; i++) {
         for (let j = 0; j < cubesInLayer; j++) {
           const cube = this.__newCube(cubesInLayer, i, j, layer, layers, baseSize, color);
+          cube.setOpacity(0.5);
           cube.setPosition(
             (i - (cubesInLayer - 1) / 2) * (baseSize + gap) + 1,
             -layer * (baseSize + gap),
             (j - (cubesInLayer - 1) / 2) * (baseSize + gap) - 1
           );
           this.cubes.push(cube);
+          this.cubeLayers[layersIndex].push(cube);
           this.group.add(cube.mesh);
         }
       }

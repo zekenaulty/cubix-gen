@@ -30,18 +30,4 @@ export class Text extends BaseGeometry {
       this.mesh = new THREE.Mesh(this.geometry, this.material);
     });
   }
-  
-  setPosition(x, y, z) {
-    if (this.mesh) {
-      this.mesh.position.set(x, y, z);
-    }
-  }
-  
-  setColor(color) {
-    this.color = color;
-    this.material.color.set(color);
-    if (this.mesh) {
-      this.mesh.material.needsUpdate = true;
-    }
-  }
 }
