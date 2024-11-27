@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Cube } from './cube.js';
 import { getRandomPaletteColor } from '../utils/colors.js';
-
+import { ShapeFactory } from './shapeFactory.js';
 export class Diamond {
   constructor(layers, baseSize, gap, color = null) {
 
@@ -12,6 +12,8 @@ export class Diamond {
 
     this.cubes = [];
 
+    this.group = new THREE.Group(); // Initialize the group
+    this.shapeFactory = new ShapeFactory();
     this.topPyramid = [];
     this.leftPyramid = [];
     this.rightPyramid = [];
@@ -25,6 +27,7 @@ export class Diamond {
     this.__outerEdge();
     this.__createCubesInverse();
     this.cubes.forEach((cube) => {
+      cube.setSize(20);
       cube.setColor(cube.isCorner ? this.cornerColor : cube.isEdge ? this.edgeColor : this.innerColor);
     });
   }
@@ -45,12 +48,16 @@ export class Diamond {
 
     const isEdgeCube = ((i === 1 || i === cubesInLayer - offset002 || j === 1 || j === cubesInLayer - offset002));
     const cubeColor = isCorner ? this.cornerColor : isEdgeCube ? this.edgeColor : (isCenterLayer ? this.cornerColor : color || this.innerColor);
+    const cube = this.shapeFactory.getShape('Cube', { size: 20, color: 0xff0000 });
+    
+    /*
     const cube = new Cube(
       baseSize, 
       cubeColor, 
       isCorner ? 'corner' : isCenterLayer ? 'edge' : positionType);
       cube.isCorner = isCorner;
       cube.isEdge = isEdgeCube;
+    */
 
     return cube;
   }
@@ -69,6 +76,7 @@ export class Diamond {
             (j - (cubesInLayer - 1) / 2) * (baseSize + gap) + 1
           );
           this.cubes.push(cube);
+          this.group.add(cube.mesh);
         }
       }
     }
@@ -92,6 +100,7 @@ export class Diamond {
           (j - (cubesInLayer - 1) / 2) * (baseSize + gap)
         );
         this.cubes.push(cube);
+        this.group.add(cube.mesh);
       }
     }
   }
@@ -112,12 +121,25 @@ export class Diamond {
             (j - (cubesInLayer - 1) / 2) * (baseSize + gap) - 1
           );
           this.cubes.push(cube);
+          this.group.add(cube.mesh);
         }
       }
     }
   }
 
 
+  addToScene(scene) {
+    scene.add(this.group); // Add the group to the scene
+  }
+
+  removeFromScene(scene) {
+    scene.remove(this.group); // Remove the group from the scene
+  }
+
+  setPosition(x, y, z) {
+    this.group.position.set(x, y, z); // Set the position of the group
+  }
+  
   /*
     __createCubes() {
       const { layers, baseSize, gap, color } = this;
@@ -152,6 +174,7 @@ export class Diamond {
       }
     }
   */
+ /*
   addToScene(scene) {
     this.cubes.forEach((cube) => scene.add(cube.mesh));
   }
@@ -169,4 +192,5 @@ export class Diamond {
       );
     });
   }
+    */
 }

@@ -4,14 +4,17 @@ import cornerImage from './assets/cube/00002894.jpg';
 import edgeImage from './assets/cube/00002980.jpg';
 import innerImage from './assets/cube/00002955.jpg';
 
+import { BaseGeometry } from './baseGeometry';
+
 const textureLoader = new THREE.TextureLoader();
 
 const cornerTexture = textureLoader.load(cornerImage);
 const edgeTexture = textureLoader.load(edgeImage);
 const innerTexture = textureLoader.load(innerImage);
 
-export class Cube {
+export class Cube extends BaseGeometry {
   constructor(size, color, positionType = 'inner') {
+    super();
     this.size = size;
     this.color = color;
     this.positionType = positionType; // 'corner', 'edge', or 'inner'
