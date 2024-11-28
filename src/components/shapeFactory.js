@@ -53,8 +53,9 @@ export class ShapeFactory {
     const size = options.size || 1;
     const color = options.color || getRandomPaletteColor();
     const positionType = options.positionType || 'inner';
+    const texture = options.texture || undefined;
 
-    return new ShapeClass(size, color, positionType);
+    return new ShapeClass(size, color, positionType, texture);
   }
 
   /**

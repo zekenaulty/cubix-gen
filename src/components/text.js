@@ -4,7 +4,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { BaseGeometry } from './baseGeometry';
 
 export class Text extends BaseGeometry {
-  constructor(text, size, color, positionType = 'inner') {
+/*   constructor(text, size, color, positionType = 'inner') {
     super();
     this.text = text;
     this.size = size; // Size of the text
@@ -15,7 +15,7 @@ export class Text extends BaseGeometry {
     this.mesh = null;
     this.__firstColorSet = true;
     this.loadFont();
-  }
+  } */
   
   loadFont() {
     const loader = new FontLoader();
@@ -29,5 +29,13 @@ export class Text extends BaseGeometry {
       });
       this.mesh = new THREE.Mesh(this.geometry, this.material);
     });
+  }
+
+  constructor(size, color, positionType = 'inner', texture) {
+    super(size, color, positionType, texture);
+  }  
+  
+  createGeometry() {
+    this.loadFont();
   }
 }

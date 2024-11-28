@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { BaseGeometry } from './baseGeometry';
 
 export class Plane extends BaseGeometry {
-  constructor(size, color, positionType = 'inner') {
+/*   constructor(size, color, positionType = 'inner') {
     super();
     this.size = size; // Width and height of the plane
     this.color = color;
@@ -12,5 +12,13 @@ export class Plane extends BaseGeometry {
     this.material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.__firstColorSet = true;
+  } */
+
+  constructor(size, color, positionType = 'inner', texture) {
+    super(size, color, positionType, texture);
+  }  
+  
+  createGeometry() {
+    this.geometry = new THREE.PlaneGeometry(radiusTop, radiusBottom, height, 32);
   }
 }
