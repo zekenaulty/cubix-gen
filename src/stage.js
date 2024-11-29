@@ -1,25 +1,23 @@
 // src/app.js
 import * as THREE from 'three';
-import TWEEN from '@tweenjs/tween.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Diamond } from './components/diamond.js';
 import { getRandomColor, getRandomPaletteColor } from './utils/colors.js';
 
 const tic = new Date();
 const colorAt = 1000;
-const cameraX = 258;
+const cameraX = 10;
 const cameraY = -1;
-const cameraZ = 258;
+const cameraZ = 10;
 
 let colorTimer = new Date();
 let first = true;
 
 export class Stage {
-    constructor(container = document.body, startup = () => {}, animate = () => {}, tween = TWEEN) {
+    constructor(container = document.body, startup = () => {}, animate = () => {}) {
         this.container = container;
         this.__startup = startup;
         this.__animate = animate;
-        this.tween = tween;
 
         // Scene, Camera, Renderer
         this.scene = new THREE.Scene();

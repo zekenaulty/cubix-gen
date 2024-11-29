@@ -106,30 +106,4 @@ export class BaseGeometry {
       this.mesh.geometry = this.geometry; // Update mesh geometry
     }
   }
-
-
-  // fadeToColor(newColorHex, duration = 1000) {
-  //   // Get current color
-  //   const currentColor = new THREE.Color(this.material.color.getHex());
-
-  //   // Convert new color hex to THREE.Color
-  //   const newColor = new THREE.Color(newColorHex);
-
-  //   // Create an object to tween
-  //   const colorTween = { r: currentColor.r, g: currentColor.g, b: currentColor.b };
-
-  //   // Create the tween
-  //   const tween = new TWEEN.Tween(colorTween);
-  //   tween.to({ r: newColor.r, g: newColor.g, b: newColor.b }, duration);
-  //   tween.onUpdate(() => {
-  //     // Update the material color
-  //     this.material.color.setRGB(colorTween.r, colorTween.g, colorTween.b);
-  //   });
-  //   tween.onComplete(() => {
-  //     const i = myArray.findIndex(obj => obj === tween);
-  //     this.tweens.splice(i, 1);
-  //   });
-  //   this.tweens.push(tween);
-  //}
-
 }

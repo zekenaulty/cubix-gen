@@ -1,136 +1,48 @@
-// BaseGeometry.js
 import * as THREE from 'three';
-import TWEEN from '@tweenjs/tween.js';
+import { ShapeFactory } from './shapeFactory';
 
 export class BaseGroupGeometry {
-  constructor(size, color, positionType = 'inner', texture) {
-    this._size = size;
-    this._color = color;
-    this._opacity = 1;
-    this._texture = texture;
-    this.positionType = positionType;
+    constructor(size, color, positionType = 'inner', texture) {
+        this.size = size; // Size of individual cubes
+        this.color = color;
+        this.positionType = positionType;
+        this.texture = texture;
 
-    this.geometry = null;
-    this.mesh = null;
-    this.createMaterial();
-    this.createGeometry();
-    this.createMesh();
-  }
+        this.group = new THREE.Group(); // Group to hold all cubes
+        this.cubes = []; // Store individual cubes for reference
 
-  // Getter and setter for size
-  get size() {
-    return this._size;
-  }
-  set size(value) {
-    if (this._size !== value) {
-      this._size = value;
-      this.updateGeometry();
+        this.shapeFactory = new ShapeFactory(); // Factory to create cubes
     }
-  }
 
-  // Getter and setter for color
-  get color() {
-    return this._color;
-  }
-  set color(value) {
-    if (this._color !== value) {
-      this._color = value;
-      if (this.material) {
-        this.material.color.set(value);
-        this.material.needsUpdate = true;
-      }
+    addCube(x, y, z) {
+        const cube = this.shapeFactory.getShape('Cube', {
+            size: this.size,
+            color: this.color,
+            positionType: this.positionType,
+            texture: this.texture,
+        });
+        cube.setPosition(x, y, z);
+        this.group.add(cube.mesh);
+        this.cubes.push(cube);
     }
-  }
 
-  // Getter and setter for opacity
-  get opacity() {
-    return this._opacity;
-  }
-  set opacity(value) {
-    if (this._opacity !== value) {
-      this._opacity = value;
-      if (this.material) {
-        this.material.opacity = value;
-        this.material.transparent = value < 1;
-        this.material.needsUpdate = true;
-      }
+    setPosition(x, y, z) {
+        this.group.position.set(x, y, z);
     }
-  }
 
-  // Getter and setter for texture
-  get texture() {
-    return this._texture;
-  }
-  set texture(value) {
-    if (this._texture !== value) {
-      this._texture = value;
-      if (this.material) {
-        this.material.map = value;
-        this.material.needsUpdate = true;
-      }
+    setColor(color) {
+        this.color = color;
+        this.cubes.forEach((cube) => {
+            cube.color = color; // Update color for each cube
+        });
     }
-  }
 
-  // Method to set position
-  setPosition(x, y, z) {
-    if (this.mesh) {
-      this.mesh.position.set(x, y, z);
+    dispose() {
+        this.cubes.forEach((cube) => {
+            if (cube.mesh && cube.mesh.geometry) cube.mesh.geometry.dispose();
+            if (cube.mesh && cube.mesh.material) cube.mesh.material.dispose();
+        });
+        this.group.clear();
+        this.cubes = [];
     }
-  }
-
-  // Abstract method to create geometry (to be implemented by subclasses)
-  createGeometry() {
-    throw new Error('createGeometry() must be implemented by subclasses');
-  }
-
-  // Abstract method to create geometry (to be implemented by subclasses)
-  createMaterial() {
-    this.material = new THREE.MeshStandardMaterial({
-      color: this._color,
-      transparent: this._opacity < 1,
-      opacity: this._opacity,
-      map: this._texture,
-    });
-  }
-
-  createMesh() {
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-  }
-
-  // Method to update geometry when size changes
-  updateGeometry() {
-    if (this.geometry) {
-      this.geometry.dispose(); // Dispose of old geometry
-    }
-    this.createGeometry(); // Recreate geometry with new size
-    if (this.mesh) {
-      this.mesh.geometry = this.geometry; // Update mesh geometry
-    }
-  }
-
-
-  fadeToColor(newColorHex, duration = 1000) {
-    // Get current color
-    const currentColor = new THREE.Color(this.material.color.getHex());
-
-    // Convert new color hex to THREE.Color
-    const newColor = new THREE.Color(newColorHex);
-
-    // Create an object to tween
-    const colorTween = { r: currentColor.r, g: currentColor.g, b: currentColor.b };
-
-    // Create the tween
-    const tween = new TWEEN.Tween(colorTween);
-    tween.to({ r: newColor.r, g: newColor.g, b: newColor.b }, duration);
-    tween.onUpdate(() => {
-      // Update the material color
-      this.material.color.setRGB(colorTween.r, colorTween.g, colorTween.b);
-    });
-    tween.onComplete(() => {
-      const i = myArray.findIndex(obj => obj === tween);
-      this.tweens.splice(i, 1);
-    });
-    this.tweens.push(tween);
-  }
-
 }

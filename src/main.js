@@ -8,5 +8,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('app');
 
   // Initialize the App
-  new App(container);
+  const app = new App(container);
 });
