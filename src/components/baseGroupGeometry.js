@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { ShapeFactory } from './shapeFactory';
+import { getRandomPaletteColor } from '../utils/colors';
 
 export class BaseGroupGeometry {
     constructor(size, color, positionType = 'inner', texture) {
@@ -14,8 +15,8 @@ export class BaseGroupGeometry {
         this.shapeFactory = new ShapeFactory(); // Factory to create cubes
     }
 
-    addCube(x, y, z) {
-        const cube = this.shapeFactory.getShape('Cube', {
+    addCube(x, y, z, shape = 'Cube') {
+        const cube = this.shapeFactory.getShape(shape, {
             size: this.size,
             color: this.color,
             positionType: this.positionType,

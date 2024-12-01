@@ -1,66 +1,36 @@
-import { Line } from '../line';
-import { BaseGroupGeometry } from '../../baseGroupGeometry';
 import * as THREE from 'three';
 
-import { getRandomColor, getRandomPaletteColor } from '../../../utils/colors.js';
-
-export class BinaryTreeFractal extends BaseGroupGeometry {
-    constructor(
-        startVector,
-        length,
-        angle,
-        depth,
-        size,
-        color = getRandomPaletteColor(),
-        positionType = 'inner',
-        texture,
-        delay = 0
-    ) {
-        super(size, color, positionType, texture);
-
-        this.startVector = startVector; // Starting point of the tree
-        this.length = length; // Initial branch length
-        this.angle = angle; // Angle between branches
-        this.depth = depth; // Maximum recursion depth
-        this.delay = delay;
-
-        this.createGeometry();
+export class BinaryTreeFractal {
+    constructor(manager, startVector, length, angle, depth, size, colors) {
+        this.manager = manager;
+        this.startVector = startVector;
+        this.length = length;
+        this.angle = angle;
+        this.depth = depth;
+        this.size = size;
+        this.trunkColor = colors.trunk || 0x8b4513; // Default brown
+        this.leafColor = colors.leaf || 0x228b22; // Default green
     }
 
-    createGeometry() {
-        this.generateBranch(this.startVector, this.length, -Math.PI / 2, this.depth, 0);
+    async createGeometry() {
+        await this.generateBranch(this.startVector, this.length, Math.PI / 2, this.depth);
     }
 
-    generateBranch(start, length, angle, depth, delayCounter) {
+    async generateBranch(start, length, angle, depth) {
         if (depth === 0) return;
 
-        // Calculate the end point of the current branch
         const end = new THREE.Vector3(
             start.x + length * Math.cos(angle),
             start.y + length * Math.sin(angle),
             start.z
         );
 
-        // Create the current branch as a Line
-        setTimeout(() => {
-            const branch = new Line(
-                start,
-                end,
-                this.size,
-                getRandomPaletteColor(),
-                this.positionType,
-                this.texture,
-                this.delay
-            );
-            this.group.add(branch.group);
-        }, this.delay * delayCounter);
+        const color = length > 3 ? this.trunkColor : this.leafColor;
+        this.manager.addInstance(color, start);
+        this.manager.addInstance(color, end);
 
-        // Recursively create left and right branches
-        const newLength = length * 0.7; // Reduce branch length
-        const leftAngle = angle + this.angle;
-        const rightAngle = angle - this.angle;
-
-        this.generateBranch(end, newLength, leftAngle, depth - 1, delayCounter + 1);
-        this.generateBranch(end, newLength, rightAngle, depth - 1, delayCounter + 2);
+        const newLength = length * 0.7;
+        await this.generateBranch(end, newLength, angle + this.angle, depth - 1);
+        await this.generateBranch(end, newLength, angle - this.angle, depth - 1);
     }
 }

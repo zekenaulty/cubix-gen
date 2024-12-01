@@ -84,12 +84,21 @@ export class BaseGeometry {
 
   // Abstract method to create geometry (to be implemented by subclasses)
   createMaterial() {
-    this.material = new THREE.MeshStandardMaterial({
-      color: this._color,
-      transparent: this._opacity < 1,
-      opacity: this._opacity,
-      map: this._texture,
-    });
+
+    if (this.texture) {
+      this.material = new THREE.MeshStandardMaterial({
+        color: this._color,
+        transparent: this._opacity < 1,
+        opacity: this._opacity,
+        map: this._texture,
+      });
+    } else {
+      this.material = new THREE.MeshStandardMaterial({
+        color: this._color,
+        transparent: this._opacity < 1,
+        opacity: this._opacity,
+      });
+    }
   }
 
   createMesh() {

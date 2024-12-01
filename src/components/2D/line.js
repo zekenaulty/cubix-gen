@@ -2,32 +2,35 @@ import { BaseGroupGeometry } from '../baseGroupGeometry';
 import * as THREE from 'three';
 
 export class Line extends BaseGroupGeometry {
-    constructor(startVector, endVector, size, color, positionType = 'inner', texture, delay = 0) {
+    constructor(startVector, endVector, size, color, positionType = 'inner', texture, delay = 0, shape = 'Cube') {
         super(size, color, positionType, texture);
         this.startVector = startVector;
         this.endVector = endVector;
-        this.delay = delay; // Delay between adding cubes
-        this.createGeometry();
+        this.delay = delay;
+        this.shape = shape;
     }
 
-    createGeometry() {
-        // Calculate direction and distance between the two vectors
-        const direction = new THREE.Vector3().subVectors(this.endVector, this.startVector).normalize();
-        const distance = this.startVector.distanceTo(this.endVector);
+    async createGeometry() {
+        return new Promise((resolve) => {
+            const direction = new THREE.Vector3().subVectors(this.endVector, this.startVector);
+            const length = direction.length();
+            const numCubes = Math.ceil(length / this.size);
+            const unitDirection = direction.normalize();
+            let currentPos = this.startVector.clone();
+            let cubesAdded = 0;
 
-        // Number of cubes to fit along the line
-        const steps = Math.ceil(distance / this.size);
+            const addCube = () => {
+                if (cubesAdded < numCubes) {
+                    this.addCube(currentPos.x, currentPos.y, currentPos.z, this.shape);
+                    currentPos.addScaledVector(unitDirection, this.size);
+                    cubesAdded++;
+                    setTimeout(addCube, this.delay); // Schedule the next cube addition
+                } else {
+                    resolve(); // All cubes are added; resolve the promise
+                }
+            };
 
-        // Add cubes along the line with staggered delays
-        for (let i = 0; i <= steps; i++) {
-            const position = new THREE.Vector3()
-                .copy(this.startVector)
-                .add(direction.clone().multiplyScalar(i * this.size));
-
-            // Staggered addition
-            setTimeout(() => {
-                this.addCube(position.x, position.y, position.z);
-            }, this.delay * i);
-        }
+            addCube(); // Start adding cubes
+        });
     }
 }
